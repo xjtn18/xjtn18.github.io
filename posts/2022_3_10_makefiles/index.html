@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>C&#43;&#43;/Java programmers guide to building and running bigger projects w/ GNU Make | Jacob Nardone&#39;s Portfolio &amp; Blog</title>
+<meta name="keywords" content="" />
+<meta name="description" content="First learning C&#43;&#43; in university, I thought compiling and running C&#43;&#43; programs was just about as easy Python. All I needed was a compiler (GNU g&#43;&#43; would do just fine) and then I could just run the produced executable. Granted that was one more step than just having a simple Python module interpreted, but it was easy enough running this command in a terminal:
+--&gt; g&#43;&#43; main.cpp -o out &amp;&amp; .">
+<meta name="author" content="">
+<link rel="canonical" href="https://xjtn18.github.io/posts/2022_3_10_makefiles/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.79266fcee8097dccae2529d983ec18f8d3c2f6f482b40a96727f00e8e1845035.css" integrity="sha256-eSZvzugJfcyuJSnZg&#43;wY&#43;NPC9vSCtAqWcn8A6OGEUDU=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://xjtn18.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://xjtn18.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://xjtn18.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://xjtn18.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://xjtn18.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="C&#43;&#43;/Java programmers guide to building and running bigger projects w/ GNU Make" />
+<meta property="og:description" content="First learning C&#43;&#43; in university, I thought compiling and running C&#43;&#43; programs was just about as easy Python. All I needed was a compiler (GNU g&#43;&#43; would do just fine) and then I could just run the produced executable. Granted that was one more step than just having a simple Python module interpreted, but it was easy enough running this command in a terminal:
+--&gt; g&#43;&#43; main.cpp -o out &amp;&amp; ." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://xjtn18.github.io/posts/2022_3_10_makefiles/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-10T15:01:15-08:00" />
+<meta property="article:modified_time" content="2022-03-10T15:01:15-08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="C&#43;&#43;/Java programmers guide to building and running bigger projects w/ GNU Make"/>
+<meta name="twitter:description" content="First learning C&#43;&#43; in university, I thought compiling and running C&#43;&#43; programs was just about as easy Python. All I needed was a compiler (GNU g&#43;&#43; would do just fine) and then I could just run the produced executable. Granted that was one more step than just having a simple Python module interpreted, but it was easy enough running this command in a terminal:
+--&gt; g&#43;&#43; main.cpp -o out &amp;&amp; ."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Posts",
+      "item": "https://xjtn18.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "C++/Java programmers guide to building and running bigger projects w/ GNU Make",
+      "item": "https://xjtn18.github.io/posts/2022_3_10_makefiles/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "C++/Java programmers guide to building and running bigger projects w/ GNU Make",
+  "name": "C\u002b\u002b\/Java programmers guide to building and running bigger projects w\/ GNU Make",
+  "description": "First learning C++ in university, I thought compiling and running C++ programs was just about as easy Python. All I needed was a compiler (GNU g++ would do just fine) and then I could just run the produced executable. Granted that was one more step than just having a simple Python module interpreted, but it was easy enough running this command in a terminal:\n\r--\r\u0026gt; g++ main.cpp -o out \u0026amp;\u0026amp; .",
+  "keywords": [
+    
+  ],
+  "articleBody": "First learning C++ in university, I thought compiling and running C++ programs was just about as easy Python. All I needed was a compiler (GNU g++ would do just fine) and then I could just run the produced executable. Granted that was one more step than just having a simple Python module interpreted, but it was easy enough running this command in a terminal:\n\r--\r g++ main.cpp -o out \u0026\u0026 ./out However, naive younger me didn’t realize how much more convoluted this command would need to get once you started working on projects what weren’t just a simple ‘main.cpp’ file. You needed a much broader understanding of the g++ program before I wanted to start factoring in things like multiple source files, header files, external libraries, and ranging directory structures.\nQuickly this command can get out of hand, and can become super tedious to write as you project gets larger and larger. There had to be a way to not only avoid writing this command out every time, but to also automate the changes that needed to be made to it as new files were added to the project.\nWanting to learn more, this sent me into a spiral of Google searches, almost all of which led me to the same undesirable solution:\n\"Download [IDE name here] and let it handle all of that for you!\"\rAnd yes, that would have been easier. My CS professor always told us to never be afraid to stand on the shoulders of giants, and I always saw value to that metaphor, but something about being able to build and run my own code without having to download some monstrous software like Visual Studio or Eclipse felt very important to me. It felt empowering to know that the only tools I really needed were the compiler and some hopefully segfault-free source code.\nAt this point I had messed around with GNU Make in college on a few occasions, but had never really delved into its more obscure yet powerful functionality. Having stood the test of time as lightweight build tool, I thought it was time to really dig into into Make.\nAfter months of practice writing Makefiles and reading documentation (and StackOverflow of course), I managed to create comfortably flexible Makefiles for both for C++ and Java that so far have served me quite well in getting new projects up and running quickly (all from the comfort of my terminal).\nBefore getting started, you’ll need:\n GNU Make a C++ compiler (or a Java JDK) a terminal  First, let’s take a look at the C++ makefile.\nC++ Makefile\r\r#----------------------------------------------------------------# #--------------------- Project Specifics ------------------------# # name of dir that stores source files SRCDIR\t:= # name of dir that stores header files INCDIR\t:= # name of dir that stores object files OBJDIR := # name of your final executable EXEC := # your C compiler CC\t:= # compilation flags LIBPATH\t:= CFLAGS\t:= -I$(INCDIR) -I$(LIBPATH) -std=c++17 # linker flags LFLAGS\t:= -L$(LIBPATH) -lmystd  .PHONY: run runonly clean #----------------------------------------------------------------# #----------------------------------------------------------------#  # creates string list of object files we need to create OBJS := $(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(wildcard $(SRCDIR)/*.cpp)) # creates string list of all our header files HEADERS := $(wildcard $(INCDIR)/*.hpp)  # Links object files and generates executable $(EXEC): $(OBJS) \t@ echo Linking executable ... \t@ $(CC) $^ $(LFLAGS) -o $@ \t@ rm -rf $(OBJS) \t@ echo Done. \t@ printf \"\\n\"  # Creates every object file we need in OBJS using corresponding source file + headers $(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(HEADERS) | $(OBJDIR) \t@ echo Compiling $\t@ $(CC) $$(CFLAGS) -o $@  # Builds the object file directory if not already there $(OBJDIR): \t@ mkdir -p $@  # Checks if needs to be rebuilt and runs the executable run: $(EXEC) \t@ make runonly  # Just runs the executable runonly: \t@ ./$(EXEC)  # Cleans all generated files clean: \t@ rm -rf $(EXEC) $(OBJS) And as promised, below is the Java makefile.\nJava Makefile\r\r#----------------------------------------------------------------# #--------------------- Project Specifics ------------------------# # Path to your program start class relative to source directory mainclass := # Full path to you java source code / packages srcdir := # Name of the directory storing your class files bindir := # Path(s) to all class files needed to compile and run clspth := #----------------------------------------------------------------# #----------------------------------------------------------------#  modlist := $(bindir)/modlist # Recursive wildcard function - leave as is. rwildcard = $(foreach d,$(wildcard $(1:=/*)), $(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d)) sources = $(call rwildcard, $(srcdir), *.java) .PHONY: run runonly clean  # compares timestamps of the dummy file (modlist) with each source file $(modlist): $(sources) | $(bindir) \t@ echo Compiling $(notdir $?) ... \t@ javac -d $(bindir) -classpath $(clspth) $? \t@ printf \"Done!\\n\\n\" \t@ touch $@  run: $(modlist) \t@ make runonly  runonly: \t@ java -classpath $(clspth) $(mainclass)  $(bindir): \t@ mkdir $@  clean: \t@ rm -rf $(bindir) ",
+  "wordCount" : "801",
+  "inLanguage": "en",
+  "datePublished": "2022-03-10T15:01:15-08:00",
+  "dateModified": "2022-03-10T15:01:15-08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://xjtn18.github.io/posts/2022_3_10_makefiles/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Jacob Nardone's Portfolio \u0026 Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://xjtn18.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://xjtn18.github.io" accesskey="h" title="Jacob Nardone&#39;s Portfolio &amp; Blog (Alt + H)">Jacob Nardone&#39;s Portfolio &amp; Blog</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      C&#43;&#43;/Java programmers guide to building and running bigger projects w/ GNU Make
+    </h1>
+    <div class="post-meta"><span title='2022-03-10 15:01:15 -0800 PST'>March 10, 2022</span>&nbsp;·&nbsp;4 min
+
+</div>
+  </header> 
+  <div class="post-content"><p>First learning C++ in university, I thought compiling and running C++ programs was just about as easy Python. All I needed was a compiler (GNU g++ would do just fine) and then I could just run the produced executable. Granted that <i>was</i> one more step than just having a simple Python module interpreted, but it was easy enough running this command in a terminal:</p>
+<!-- Shortcode for adding an image: -- <figure>
+    <img loading="lazy" src="/images/moose.jpeg#center" height="600"/> 
+</figure>
+ -->
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>&gt; g++ main.cpp -o out <span style="color:#f92672">&amp;&amp;</span> ./out
+</span></span></code></pre></div><p>However, naive younger me didn&rsquo;t realize how much more convoluted this command would need to get once you started working on projects what weren&rsquo;t just a simple &lsquo;main.cpp&rsquo; file. You needed a much broader understanding of the g++ program before I wanted to start factoring in things like multiple source files, header files, external libraries, and ranging directory structures.</p>
+<p>Quickly this command can get out of hand, and can become super tedious to write as you project gets larger and larger. There had to be a way to not only avoid writing this command out every time, but to also automate the changes that needed to be made to it as new files were added to the project.</p>
+<p>Wanting to learn more, this sent me into a spiral of Google searches, almost all of which led me to the same undesirable solution:</p>
+<p style="color:rgb(236, 119, 98); text-align:center; font-size: 25px">
+	<i>"Download [IDE name here] and let it handle all of that for you!"</i>
+</p>
+<p>And yes, that would have been easier. My CS professor always told us to never be afraid to stand on the shoulders of giants, and I always saw value to that metaphor, but something about being able to build and run my own code without having to download some monstrous software like Visual Studio or Eclipse felt very important to me. It felt empowering to know that the only tools I really needed were the compiler and some hopefully segfault-free source code.</p>
+<p>At this point I had messed around with GNU Make in college on a few occasions, but had never really delved into its more obscure yet powerful functionality. Having stood the test of time as lightweight build tool, I thought it was time to really dig into into Make.</p>
+<p>After months of practice writing Makefiles and reading documentation (and StackOverflow of course), I managed to create comfortably flexible Makefiles for both for C++ and Java that so far have served me quite well in getting new projects up and running quickly (all from the comfort of my terminal).</p>
+<p>Before getting started, you&rsquo;ll need:</p>
+<ul>
+<li>GNU Make</li>
+<li>a C++ compiler (or a Java JDK)</li>
+<li>a terminal</li>
+</ul>
+<p>First, let&rsquo;s take a look at the C++ makefile.</p>
+<h2 style="color:rgb(155, 228, 99); text-align:center;">
+	<i>C++ Makefile</i>
+</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-make" data-lang="make"><span style="display:flex;"><span><span style="color:#75715e">#----------------------------------------------------------------#
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#--------------------- Project Specifics ------------------------#
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"># name of dir that stores source files
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>SRCDIR	<span style="color:#f92672">:=</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># name of dir that stores header files
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>INCDIR	<span style="color:#f92672">:=</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># name of dir that stores object files
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>OBJDIR 	<span style="color:#f92672">:=</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># name of your final executable
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>EXEC 		<span style="color:#f92672">:=</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># your C compiler
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>CC			<span style="color:#f92672">:=</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># compilation flags
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>LIBPATH	<span style="color:#f92672">:=</span>
+</span></span><span style="display:flex;"><span>CFLAGS	<span style="color:#f92672">:=</span> -I<span style="color:#66d9ef">$(</span>INCDIR<span style="color:#66d9ef">)</span> -I<span style="color:#66d9ef">$(</span>LIBPATH<span style="color:#66d9ef">)</span> -std<span style="color:#f92672">=</span>c++17
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># linker flags
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>LFLAGS	<span style="color:#f92672">:=</span> -L<span style="color:#66d9ef">$(</span>LIBPATH<span style="color:#66d9ef">)</span> -lmystd
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">.PHONY</span><span style="color:#f92672">:</span> run runonly clean
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#----------------------------------------------------------------#
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#----------------------------------------------------------------#
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># creates string list of object files we need to create
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>OBJS 		<span style="color:#f92672">:=</span> <span style="color:#66d9ef">$(</span>patsubst <span style="color:#66d9ef">$(</span>SRCDIR<span style="color:#66d9ef">)</span>/%.cpp, <span style="color:#66d9ef">$(</span>OBJDIR<span style="color:#66d9ef">)</span>/%.o, <span style="color:#66d9ef">$(</span>wildcard <span style="color:#66d9ef">$(</span>SRCDIR<span style="color:#66d9ef">)</span>/*.cpp<span style="color:#66d9ef">))</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># creates string list of all our header files
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>HEADERS 	<span style="color:#f92672">:=</span> <span style="color:#66d9ef">$(</span>wildcard <span style="color:#66d9ef">$(</span>INCDIR<span style="color:#66d9ef">)</span>/*.hpp<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Links object files and generates executable
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">$(EXEC)</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">$(</span>OBJS<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>	@ echo Linking executable ...
+</span></span><span style="display:flex;"><span>	@ <span style="color:#66d9ef">$(</span>CC<span style="color:#66d9ef">)</span> $^ <span style="color:#66d9ef">$(</span>LFLAGS<span style="color:#66d9ef">)</span> -o $@
+</span></span><span style="display:flex;"><span>	@ rm -rf <span style="color:#66d9ef">$(</span>OBJS<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>	@ echo Done.
+</span></span><span style="display:flex;"><span>	@ printf <span style="color:#e6db74">&#34;\n&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Creates every object file we need in OBJS using corresponding source file + headers
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">$(OBJDIR)/%.o</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">$(</span>SRCDIR<span style="color:#66d9ef">)</span>/%.cpp <span style="color:#66d9ef">$(</span>HEADERS<span style="color:#66d9ef">)</span> | <span style="color:#66d9ef">$(</span>OBJDIR<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>	@ echo Compiling $&lt; ...
+</span></span><span style="display:flex;"><span>	@ <span style="color:#66d9ef">$(</span>CC<span style="color:#66d9ef">)</span> $&lt; -c <span style="color:#66d9ef">$(</span>CFLAGS<span style="color:#66d9ef">)</span> -o $@
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Builds the object file directory if not already there
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">$(OBJDIR)</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>	@ mkdir -p $@
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Checks if needs to be rebuilt and runs the executable
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">run</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">$(</span>EXEC<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>	@ make runonly
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Just runs the executable
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">runonly</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>	@ ./<span style="color:#66d9ef">$(</span>EXEC<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Cleans all generated files
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">clean</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>	@ rm -rf <span style="color:#66d9ef">$(</span>EXEC<span style="color:#66d9ef">)</span> <span style="color:#66d9ef">$(</span>OBJS<span style="color:#66d9ef">)</span>
+</span></span></code></pre></div><p>And as promised, below is the Java makefile.</p>
+<h2 style="color:rgb(155, 228, 99); text-align:center;">
+	<i>Java Makefile</i>
+</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-make" data-lang="make"><span style="display:flex;"><span><span style="color:#75715e">#----------------------------------------------------------------#
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#--------------------- Project Specifics ------------------------#
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"># Path to your program start class relative to source directory
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>mainclass <span style="color:#f92672">:=</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Full path to you java source code / packages
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>srcdir <span style="color:#f92672">:=</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Name of the directory storing your class files
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>bindir <span style="color:#f92672">:=</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Path(s) to all class files needed to compile and run
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>clspth <span style="color:#f92672">:=</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#----------------------------------------------------------------#
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#----------------------------------------------------------------#
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>modlist <span style="color:#f92672">:=</span> <span style="color:#66d9ef">$(</span>bindir<span style="color:#66d9ef">)</span>/modlist
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Recursive wildcard function - leave as is.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>rwildcard <span style="color:#f92672">=</span> <span style="color:#66d9ef">$(</span>foreach d,<span style="color:#66d9ef">$(</span>wildcard <span style="color:#66d9ef">$(</span>1:<span style="color:#f92672">=</span>/*<span style="color:#66d9ef">))</span>, <span style="color:#66d9ef">$(</span>call rwildcard,$d,$2<span style="color:#66d9ef">)</span> <span style="color:#66d9ef">$(</span>filter <span style="color:#66d9ef">$(</span>subst *,%,$2<span style="color:#66d9ef">)</span>,$d<span style="color:#66d9ef">))</span>
+</span></span><span style="display:flex;"><span>sources <span style="color:#f92672">=</span> <span style="color:#66d9ef">$(</span>call rwildcard, <span style="color:#66d9ef">$(</span>srcdir<span style="color:#66d9ef">)</span>, *.java<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">.PHONY</span><span style="color:#f92672">:</span> run runonly clean
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># compares timestamps of the dummy file (modlist) with each source file
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">$(modlist)</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">$(</span>sources<span style="color:#66d9ef">)</span> | <span style="color:#66d9ef">$(</span>bindir<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>	@ echo Compiling <span style="color:#66d9ef">$(</span>notdir $?<span style="color:#66d9ef">)</span> ...
+</span></span><span style="display:flex;"><span>	@ javac -d <span style="color:#66d9ef">$(</span>bindir<span style="color:#66d9ef">)</span> -classpath <span style="color:#66d9ef">$(</span>clspth<span style="color:#66d9ef">)</span> $?
+</span></span><span style="display:flex;"><span>	@ printf <span style="color:#e6db74">&#34;Done!\n\n&#34;</span>
+</span></span><span style="display:flex;"><span>	@ touch $@
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">run</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">$(</span>modlist<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>	@ make runonly
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">runonly</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>	@ java -classpath <span style="color:#66d9ef">$(</span>clspth<span style="color:#66d9ef">)</span> <span style="color:#66d9ef">$(</span>mainclass<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">$(bindir)</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>	@ mkdir $@
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">clean</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>	@ rm -rf <span style="color:#66d9ef">$(</span>bindir<span style="color:#66d9ef">)</span>
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://xjtn18.github.io">Jacob Nardone&#39;s Portfolio &amp; Blog</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = 'copy';
+
+        function copyingDone() {
+            copybutton.innerText = 'copied!';
+            setTimeout(() => {
+                copybutton.innerText = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
